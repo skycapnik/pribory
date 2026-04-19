@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Распознавание приборов</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="info-panel">
+            <h1 id="device-title">Наведите камеру на прибор</h1>
+            <p id="device-description">Ожидание распознавания...</p>
+            <div id="confidence">—</div>
+        </div>
+
+        <div id="camera-container">
+            <video id="webcam" autoplay playsinline muted></video>
+            <canvas id="capture-canvas" style="display:none;"></canvas>
+        </div>
+
+        <button id="start-btn">Запустить камеру</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

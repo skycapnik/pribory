@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #0f0f1e;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 16px;
+    gap: 16px;
+}
+
+#info-panel {
+    flex: 0 0 auto;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#device-title {
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #fff 0%, #b8c5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+#device-description {
+    font-size: clamp(16px, 3.5vw, 20px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 12px;
+}
+
+#confidence {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    font-variant-numeric: tabular-nums;
+}
+
+#camera-container {
+    flex: 1 1 auto;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    min-height: 200px;
+}
+
+#webcam {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#start-btn {
+    flex: 0 0 auto;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+#start-btn:active {
+    transform: scale(0.98);
+}
+
+#start-btn.hidden {
+    display: none;
+}
+
+/* Состояние при распознавании */
+#info-panel.detected {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+    transition: background 0.3s ease;
+}
