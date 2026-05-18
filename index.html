@@ -3,30 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a1a2e">
-    <title>Распознавание приборов</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Авиационные приборы</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <div id="info-panel">
-            <h1 id="device-title">Наведите камеру на прибор</h1>
-            <p id="device-description">Ожидание распознавания...</p>
-            <div id="confidence">—</div>
-        </div>
 
-        <div id="camera-container">
+<div id="app">
+
+    <!-- ===== ВКЛАДКА 1: КАМЕРА ===== -->
+    <div class="tab-screen" id="screen-camera">
+        <div id="camera-wrap">
             <video id="webcam" autoplay playsinline muted></video>
-            <canvas id="capture-canvas" style="display:none;"></canvas>
-        </div>
+            <canvas id="freeze-canvas"></canvas>
 
-        <button id="start-btn">Запустить камеру</button>
+            <!-- Оверлей сверху: название прибора -->
+            <div id="overlay-top" class="hidden">
+                <div id="overlay-label">Ожидание...</div>
+                <div id="overlay-conf"></div>
+            </div>
+
+            <!-- Оверлей снизу: кнопка паузы -->
+            <div id="overlay-bottom">
+                <button id="btn-pause" class="hidden" aria-label="Пауза">
+                    <span id="pause-icon">⏸</span>
+                    <span id="pause-label">Пауза</span>
+                </button>
+                <button id="btn-start">Запустить камеру</button>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-    <script src="app.js"></script>
+    <!-- ===== ВКЛАДКА 2: ИНФОРМАЦИЯ ===== -->
+    <div class="tab-screen hidden" id="screen-info">
+        <div id="info-scroll">
+
+            <div id="no-device">
+                <div class="nd-icon">📡</div>
+                <p>Наведите камеру на прибор,<br>затем нажмите <strong>Пауза</strong></p>
+            </div>
+
+            <div id="device-card" class="hidden">
+                <div id="card-header">
+                    <div id="card-badge">ПРИБОР</div>
+                    <h1 id="card-title">—</h1>
+                </div>
+                <div id="card-divider"></div>
+                <div id="card-body">
+                    <p id="card-desc">—</p>
+                </div>
+                <div id="card-specs" class="hidden">
+                    <h2>Характеристики</h2>
+                    <div id="specs-grid"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== НИЖНЯЯ ПАНЕЛЬ ВКЛАДОК ===== -->
+    <nav id="tab-bar">
+        <button class="tab-btn active" data-tab="camera" aria-label="Камера">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Камера</span>
+        </button>
+        <button class="tab-btn" data-tab="info" aria-label="Информация">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Прибор</span>
+        </button>
+    </nav>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

@@ -1,105 +1,316 @@
-* {
-    margin: 0;
-    padding: 0;
+*, *::before, *::after {
+    margin: 0; padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
-    height: 100%;
-    overflow: hidden;
-    background: #0f0f1e;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+:root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1c1c28;
+    --amber: #e8a030;
+    --amber-dim: rgba(232,160,48,0.15);
+    --amber-glow: rgba(232,160,48,0.08);
+    --text: #f0ece0;
+    --text-muted: rgba(240,236,224,0.5);
+    --text-dim: rgba(240,236,224,0.25);
+    --border: rgba(232,160,48,0.2);
+    --border-dim: rgba(240,236,224,0.08);
+    --tab-h: 68px;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Exo 2', sans-serif;
 }
 
-#app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    padding: 16px;
-    gap: 16px;
-}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overflow: hidden; }
 
-#info-panel {
-    flex: 0 0 auto;
-    background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-    min-height: 40vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+#app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 
-#device-title {
-    font-size: clamp(28px, 6vw, 42px);
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 16px;
-    background: linear-gradient(90deg, #fff 0%, #b8c5ff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
-}
-
-#device-description {
-    font-size: clamp(16px, 3.5vw, 20px);
-    line-height: 1.5;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 12px;
-}
-
-#confidence {
-    font-size: 14px;
-    color: rgba(255,255,255,0.5);
-    font-variant-numeric: tabular-nums;
-}
-
-#camera-container {
+/* ===== SCREENS ===== */
+.tab-screen {
     flex: 1 1 auto;
-    position: relative;
-    border-radius: 20px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.tab-screen.hidden { display: none; }
+
+/* ===== CAMERA SCREEN ===== */
+#camera-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
     background: #000;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-    min-height: 200px;
 }
 
-#webcam {
+#webcam, #freeze-canvas {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-#start-btn {
-    flex: 0 0 auto;
-    padding: 18px;
-    font-size: 18px;
+#freeze-canvas { display: none; }
+#freeze-canvas.active { display: block; }
+
+/* Сканирующая линия при распознавании */
+#camera-wrap.scanning::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    animation: scan 2s linear infinite;
+    pointer-events: none;
+}
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+/* Оверлей сверху */
+#overlay-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 16px 16px 20px;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.92) 60%, transparent);
+    transition: opacity 0.3s;
+}
+#overlay-top.hidden { opacity: 0; pointer-events: none; }
+
+#overlay-label {
+    font-family: var(--sans);
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: 700;
+    color: var(--amber);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+#overlay-conf {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Оверлей снизу */
+#overlay-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 20px 24px;
+    background: linear-gradient(to top, rgba(10,10,15,0.92) 60%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+#btn-start {
+    width: 100%;
+    max-width: 320px;
+    padding: 16px 24px;
+    font-family: var(--sans);
+    font-size: 16px;
     font-weight: 600;
-    color: #fff;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--bg);
+    background: var(--amber);
     border: none;
-    border-radius: 16px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    letter-spacing: 0.5px;
+    transition: transform 0.15s, opacity 0.15s;
+}
+#btn-start:active { transform: scale(0.97); }
+#btn-start.hidden { display: none; }
+
+#btn-pause {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 40px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+    min-width: 160px;
+    justify-content: center;
+}
+#btn-pause.paused {
+    color: var(--amber);
+    border-color: var(--amber);
+    background: var(--amber-dim);
+}
+#btn-pause.hidden { display: none; }
+#pause-icon { font-size: 18px; }
+
+/* ===== INFO SCREEN ===== */
+#info-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px calc(var(--tab-h) + 16px);
+    -webkit-overflow-scrolling: touch;
 }
 
-#start-btn:active {
-    transform: scale(0.98);
+#no-device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    color: var(--text-dim);
+    gap: 16px;
+}
+#no-device.hidden { display: none; }
+.nd-icon { font-size: 48px; opacity: 0.4; }
+#no-device p { font-size: 16px; line-height: 1.6; }
+#no-device strong { color: var(--amber); }
+
+/* Карточка прибора */
+#device-card {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: fadeUp 0.35s ease;
+}
+#device-card.hidden { display: none; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-#start-btn.hidden {
-    display: none;
+#card-header {
+    padding: 24px 20px 20px;
+    background: var(--amber-glow);
 }
 
-/* Состояние при распознавании */
-#info-panel.detected {
-    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
-    transition: background 0.3s ease;
+#card-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--amber);
+    background: var(--amber-dim);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
 }
+
+#card-title {
+    font-size: clamp(22px, 5.5vw, 32px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+}
+
+#card-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0;
+}
+
+#card-body {
+    padding: 20px;
+}
+
+#card-desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(240,236,224,0.85);
+}
+
+/* Характеристики */
+#card-specs {
+    padding: 0 20px 24px;
+}
+#card-specs.hidden { display: none; }
+#card-specs h2 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-dim);
+    padding-top: 16px;
+}
+
+#specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.spec-item {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-dim);
+}
+.spec-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.spec-value {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--amber);
+}
+
+/* ===== TAB BAR ===== */
+#tab-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--tab-h);
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-dim);
+    display: flex;
+    z-index: 100;
+}
+
+.tab-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-dim);
+    transition: color 0.2s;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.tab-btn svg { width: 24px; height: 24px; }
+.tab-btn span { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+.tab-btn.active { color: var(--amber); }
+.tab-btn:active { opacity: 0.7; }
+
+/* Индикатор на иконке "Прибор" */
+#tab-bar .tab-btn[data-tab="info"].has-device::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: calc(50% - 18px);
+    width: 7px; height: 7px;
+    background: var(--amber);
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+}
+.tab-btn { position: relative; }
