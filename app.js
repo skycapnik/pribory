@@ -1,24 +1,8 @@
-// ================================================================
-// КАК МЕНЯТЬ НАЗВАНИЯ И ОПИСАНИЯ ПРИБОРОВ
-// ================================================================
-// Всё редактируется ТОЛЬКО в блоке DEVICES ниже.
-// Каждый прибор — это объект с полями:
-//   title       — название, которое отображается крупно
-//   description — текст описания (можно длинный, поддерживает \n для переноса)
-//   specs       — характеристики в виде пар { label, value }
-//                 можно удалить specs полностью если не нужны
-//
-// КЛЮЧ (строка перед двоеточием) должен ТОЧНО совпадать
-// с названием класса в Teachable Machine — буква в букву!
-// Проверь в файле metadata.json (поле "labels") из экспорта модели.
-// ================================================================
 
 const DEVICES = {
 
-    // ================================================================
-    // ВАЖНО: ключи должны точно совпадать с названиями классов
-    // в Teachable Machine (проверь в metadata.json → "labels")
-    // ================================================================
+//название, описание, и характеристики приборов.
+//ВАЖНАЯ ДЕТАЛЬ: название прибора ОБЯЗАТЕЛЬНО должно совпадать с названием прибора из тичбл машин. Проверить название можно в файле metedata.json
 
     "Баклан-20": {
         title: "Баклан-20",
@@ -176,17 +160,12 @@ const DEVICES = {
 
 };
 
-// ================================================================
-// НАСТРОЙКИ — менять здесь
-// ================================================================
-
+//настройки, их можно менять (название файла с моделью, необходимая уверенность для определения прибора и частота обновления просмотра камеры)
 const MODEL_URL = "./model/";
 const CONFIDENCE_THRESHOLD = 0.85;
 const PREDICTION_INTERVAL = 400;
 
-// ================================================================
-// КОД ПРИЛОЖЕНИЯ — ниже не трогай
-// ================================================================
+//дальше лучше не трогать (графика, оформление и т. д.):
 
 let model = null;
 let videoEl = null;
@@ -214,7 +193,7 @@ const specsGrid = document.getElementById("specs-grid");
 const tabBtns = document.querySelectorAll(".tab-btn");
 const infoTabBtn = document.querySelector('.tab-btn[data-tab="info"]');
 
-// ---- Вкладки ----
+// вкладки
 tabBtns.forEach(btn => {
     btn.addEventListener("click", () => {
         const tab = btn.dataset.tab;
@@ -230,7 +209,7 @@ tabBtns.forEach(btn => {
     });
 });
 
-// ---- Запуск ----
+//запуск
 btnStart.addEventListener("click", async () => {
     btnStart.textContent = "Загрузка модели…";
     btnStart.disabled = true;
@@ -264,7 +243,7 @@ async function initApp() {
     predictionTimer = setInterval(predict, PREDICTION_INTERVAL);
 }
 
-// ---- Пауза ----
+//кнопка паузы
 btnPause.addEventListener("click", () => {
     if (!isPaused) {
         pauseCamera();
@@ -278,7 +257,7 @@ function pauseCamera() {
     clearInterval(predictionTimer);
     cameraWrap.classList.remove("scanning");
 
-    // Заморозить кадр
+    //заморозка каждра
     const ctx = freezeCanvas.getContext("2d");
     freezeCanvas.width = videoEl.videoWidth;
     freezeCanvas.height = videoEl.videoHeight;
@@ -289,7 +268,7 @@ function pauseCamera() {
     pauseLabel.textContent = "Продолжить";
     btnPause.classList.add("paused");
 
-    // Показать данные на вкладке "Прибор"
+    //показ данных на второй вкладке
     if (currentDevice) {
         showDeviceCard(currentDevice);
         infoTabBtn.classList.add("has-device");
@@ -308,7 +287,7 @@ function resumeCamera() {
     predictionTimer = setInterval(predict, PREDICTION_INTERVAL);
 }
 
-// ---- Распознавание ----
+//само распознавание
 async function predict() {
     if (!model || !videoEl || videoEl.readyState < 2) return;
     const preds = await model.predict(videoEl);
@@ -331,7 +310,7 @@ async function predict() {
     }
 }
 
-// ---- Карточка прибора ----
+//графика (карточка прибора)
 function showDeviceCard(name) {
     const dev = DEVICES[name];
     if (!dev) return;
@@ -352,7 +331,6 @@ function showDeviceCard(name) {
     }
 }
 
-// ---- PWA ----
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js").catch(() => {});
