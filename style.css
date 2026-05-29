@@ -1,3 +1,5 @@
+/* ГРАФИКА, трогать с опаской */
+
 *, *::before, *::after {
     margin: 0; padding: 0;
     box-sizing: border-box;
@@ -25,7 +27,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
 #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 
-/* ===== SCREENS ===== */
+/* отцентровать экран */
 .tab-screen {
     flex: 1 1 auto;
     overflow: hidden;
@@ -35,7 +37,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 }
 .tab-screen.hidden { display: none; }
 
-/* ===== CAMERA SCREEN ===== */
+/* подключение камеры */
 #camera-wrap {
     position: relative;
     width: 100%;
@@ -54,7 +56,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 #freeze-canvas { display: none; }
 #freeze-canvas.active { display: block; }
 
-/* Сканирующая линия при распознавании */
+/* прикольная линия сканирования */
 #camera-wrap.scanning::after {
     content: '';
     position: absolute;
@@ -69,7 +71,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     100% { top: 100%; }
 }
 
-/* Оверлей сверху */
+/* надписи сверху */
 #overlay-top {
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -94,7 +96,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     margin-top: 4px;
 }
 
-/* Оверлей снизу */
+/* надписи снизу */
 #overlay-bottom {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -150,7 +152,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 #btn-pause.hidden { display: none; }
 #pause-icon { font-size: 18px; }
 
-/* ===== INFO SCREEN ===== */
+/* оформление второй страницы */
 #info-scroll {
     flex: 1;
     overflow-y: auto;
@@ -173,7 +175,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 #no-device p { font-size: 16px; line-height: 1.6; }
 #no-device strong { color: var(--amber); }
 
-/* Карточка прибора */
+/* карточка прибора */
 #device-card {
     background: var(--surface);
     border-radius: 20px;
@@ -229,7 +231,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     color: rgba(240,236,224,0.85);
 }
 
-/* Характеристики */
+/* внешний вид табличек с характеристиками */
 #card-specs {
     padding: 0 20px 24px;
 }
@@ -271,7 +273,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     color: var(--amber);
 }
 
-/* ===== TAB BAR ===== */
+/* вид вкладок */
 #tab-bar {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -302,7 +304,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .tab-btn.active { color: var(--amber); }
 .tab-btn:active { opacity: 0.7; }
 
-/* Индикатор на иконке "Прибор" */
+/* кружок над словом прибор снизу */
 #tab-bar .tab-btn[data-tab="info"].has-device::after {
     content: '';
     position: absolute;
